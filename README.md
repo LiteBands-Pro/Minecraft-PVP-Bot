@@ -1,80 +1,132 @@
-```markdown
-# Mechanical Mineflayer Bot (Action Engine)
+# ⚔️ PvP Bot — Mineflayer Minecraft Bot
 
-An optimized, non-human, algorithmic implementation of a Mineflayer bot built for automated server navigation, defense, asset storage management, and high-performance automated combat routines (Sword & Crystal PvP) in Minecraft 1.21.1.
-
-## System Configuration
-The runtime state is managed via an automated profile wrapper with active port discovery and non-human telemetry logging.
-
-```javascript
-const settings = {
-    username : 'Itz_Alisia',
-    host     : 'hofghnnn.aternos.me',
-    port     : 52677, // Auto-overridden on initialization ping
-    version  : '1.21.1',
-    logErrors: false  // Suppressed for silent execution
-};
-
-```
-
-## Features & Subsystems
-
-### 1. Automated Combat Matrix
-
-The engine dynamically evaluates targets within a `24-block` viewport and flags aggression when under threat.
-
-* **Sword PvP Routine:** Executes a strict 1.9+ weapon attack speed cooldown formula. Incorporates dynamic target positioning prediction factor (`1.25`), alternating strafe vectors, aggressive W-tapping (sprint resets before swing), and S-tapping spacing matrices (forced backsteps after consecutive impacts).
-* **Crystal PvP Routine:** Evaluates adjacent obsidian/bedrock positions to predict explosion yield calculations using a scaled damage formula:
-
-$$\text{Yield} = 12 \times \left(1 - \frac{\text{distance}}{12}\right) \times 0.4$$
-
-
-
-Automatically filters placements below structural minimum thresholds or when self-inflicted blast damage limits are exceeded.
-
-### 2. Multi-Stage Extraction Mechanics (Anti-Stuck Engine)
-
-Monitors micro-movements on a strict physics execution tick. If forward-progress displacement drops below $0.03$ units per cycle, the following automated escape sequence tiers fire sequentially:
-
-1. **Tier 1 (Ticks 1–2):** Vector bounce with vertical hop impulse along random lateral boundaries.
-2. **Tier 2 (Tick 3):** Full inverted $180^\circ$ yaw axis rotation matched with a forced backward sprint control state.
-3. **Tier 3 (Tick 4):** Vector obstruction drilling. Automatically equips nearby excavation assets (pickaxes) and isolates adjacent geometry blocks blocks obstructing head/leg height.
-4. **Tier 4 (Tier 5+):** Forced tracking flush. Executes a directory reset and calls a remote fallback structural routine (`/back`).
-
-### 3. Inventory & Structural Execution Protocols
-
-* **Dynamic Armor Allocation:** Automatic integration with structural inventory checks to equip high-tier armor and enforce emergency off-hand Totem of Undying safety margins.
-* **Storage Interactions:** Automated pathing to adjacent repository entities (chests) within a $6\text{-block}$ radius to deposit armor components, offload inventory variables, or extract materials.
-* **Perimeter Construction:** Loops dynamic layout pathing vectors to drop foundational blocks across a $10 \times 10$ multi-axis spatial grid layout.
-* **Waste Processing:** Drops objects matching identified scrap parameters (`cobblestone`, `dirt`, `netherrack`, etc.) to clear internal execution storage.
+A feature-rich Minecraft PvP bot built with [Mineflayer](https://github.com/PrismarineJS/mineflayer). It supports sword combat, crystal PvP, auto-armor, auto-eat, pathfinding, guard mode, mining, chest interaction, and more — all controllable via in-game chat commands.
 
 ---
 
-## Executive Interface Commands
+## 📦 Requirements
 
-Commands can be invoked directly through terminal interface pipes or parsed via running server chat triggers:
+- [Node.js](https://nodejs.org/) v16 or higher
+- A Minecraft Java Edition account (or cracked server)
+- Minecraft Java **1.21.1** server
 
-| Identifier | Parameter Matrix | Description |
-| --- | --- | --- |
-| `help` | None | Dispatches command directory index via secure whisper pipe. |
-| `status` | None | Returns string map containing binary execution variables and current combat configurations. |
-| `pvp` | `[crystal / sword]` | Forces runtime mode flip between the main weapon combat state engines. |
-| `fight` | `[me / target_id]` | Forces target lock override onto specified target block entity. |
-| `crystal` | `[target_id]` | Locks target entity and forces immediate initiation of crystal detonation loop. |
-| `guard` | None | Establishes coordinates as active anchor position and runs threat scans for proximity actors. |
-| `stop` | None | Flushes all active tracking routines, pathways, and state parameters to standby. |
-| `follow` | `[target_id]` | Chains pathfinder nodes to maintain close proximity offset tracking. |
-| `come` | None | Interrogates caller coordinates and computes pathfinder traversal nodes directly to target. |
-| `mine` | None | Scans 32-block radius for defined ore geometries and enters an active extraction loop. |
-| `build` | None | Starts perimeter construction routines on local spatial coordinates. |
-| `load` | None | Extracts container variables from structural chest units into active slots. |
-| `unload` | None | Purges non-essential loose items into adjacent chest containers. |
-| `drop` | `[item_name]` | Expels item structural stacks matching criteria to recipient proximity space. |
-| `dropall` | None | Paths to operator and drops all items except specific tactical configuration tools. |
-| `clear` | None | Iterates trash list arrays and purges inventory space. |
-| `back` | None | Issues baseline structural navigation override script command. |
-| `say` | `[phrase]` | Relays literal data strings back into the server chat channel. |
+---
+
+## 🚀 Installation
+
+1. **Clone or download** the project folder and place `pvp-bot.js` inside it.
+
+2. **Initialize a Node.js project** (if you haven't already):
+   ```bash
+   npm init -y
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install mineflayer mineflayer-pathfinder mineflayer-pvp mineflayer-armor-manager minecraft-protocol minecraft-data vec3
+   ```
+
+4. **Configure the bot** by editing the top of `pvp-bot.js`:
+   ```js
+   const PASSWORD = 'your_password_here';
+
+   const settings = {
+       username : 'YourBotName',
+       host     : 'your.server.address',
+       port     : 25565,       // your server port
+       version  : '1.21.1',
+   };
+   ```
+
+5. **Run the bot:**
+   ```bash
+   node pvp-bot.js
+   ```
+
+The bot will automatically connect, log in (using `/login` and `/register`), equip armor, and begin idling.
+
+---
+
+## 💬 Chat Commands
+
+Control the bot by typing commands in Minecraft chat. The bot reads public chat and detects its name or commands from any player.
+
+| Command | Description |
+|---|---|
+| `help` | Shows a list of all available commands |
+| `status` | Reports current fight/mode/guard/mine state |
+| `go` | Attack the nearest entity |
+| `fight <player>` | Attack a specific player (or `fight me`) |
+| `stop` | Stop all current tasks |
+| `follow [player]` | Follow a player (defaults to you) |
+| `come` | Teleport/pathfind to your position |
+| `guard` | Guard your current location, attacking nearby threats |
+| `mine` | Start mining nearby ores (iron, gold, diamonds) |
+| `build` | Build a 10×10 base structure from inventory blocks |
+| `crystal [player]` | Switch to End Crystal PvP mode and attack target |
+| `pvp crystal` | Enable crystal PvP mode |
+| `pvp sword` | Switch back to sword PvP mode |
+| `load` | Pull all items from a nearby chest |
+| `unload` | Deposit non-gear items into a nearby chest |
+| `drop <item>` | Drop a specific item from inventory |
+| `dropall` | Drop all non-gear items to you |
+| `clear` | Discard trash items from inventory |
+| `tpa <player>` | Send a `/tpa` request to a player |
+| `tpaccept` / `tpyes` | Accept a pending teleport request |
+| `back` | Run `/back` (for death-point return plugins) |
+| `say <message>` | Make the bot say something in chat |
+| `jump` | Make the bot jump |
+
+---
+
+## ⚔️ Combat System
+
+### Sword Mode (default)
+- Automatic weapon selection (prefers netherite → diamond → iron sword)
+- Critical hit jumping with configurable timing
+- W-tap and S-tap combos for knockback control
+- Randomized strafing (left, right, or forward)
+- Predictive aim with velocity-based lead calculation
+- Auto-shield equip when out of melee range
+
+### Crystal PvP Mode
+- Places End Crystals on obsidian/bedrock near the target
+- Instantly breaks crystals near the target for burst damage
+- Self-damage safety limit to avoid killing itself
+- Automatically repositions to stay in optimal crystal range
+
+### Survival Mechanics
+- **Flee mode** — sprints away when health drops to ≤ 8 HP, re-engages at 12+ HP
+- **Auto-eat** — eats best available food (golden apple > golden carrot > cooked meats…)
+- **Auto-totem** — keeps Totem of Undying equipped in the off-hand
+- **Auto-armor** — equips the best available armor on spawn, item pickup, or damage
+
+---
+
+## 🧠 AI & Navigation
+
+- Uses `mineflayer-pathfinder` for intelligent movement
+- Avoids lava, cacti, sweet berry bushes, and leaf blocks
+- **Stuck detection** — multi-stage recovery: random direction dodge → back-jump → block-dig → `/back` command
+- **Idle wander** — randomly explores when not in combat or a task
+
+---
+
+## 📁 Project Structure
 
 ```
-
+your-project/
+├── pvp-bot.js       # Main bot file
+├── package.json
+└── node_modules/
 ```
+
+---
+
+## ⚠️ Notes
+
+- The bot auto-accepts `/tpa` requests from any player — use carefully on public servers.
+- Crystal PvP requires End Crystals in the bot's inventory and obsidian/bedrock under the target.
+- The `build` command uses whatever non-gear blocks are currently in inventory.
+- Type messages directly in the terminal to send chat as the bot.
+- The bot automatically reconnects after disconnection (5-second delay).
